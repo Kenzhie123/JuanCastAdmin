@@ -53,11 +53,10 @@ public class ArtistsFragment extends Fragment {
                     for(DocumentSnapshot d : documents)
                     {
                         Map<String,Object> dataInfo = d.getData();
-                        Artist artist = new Artist( (String)dataInfo.get("artist_name"),(ArrayList<String>) dataInfo.get("tags"));
+                        Artist artist = new Artist( (String)dataInfo.get("artist_name"),(ArrayList<String>) dataInfo.get("tags"),d.getId());
                         Log.d("DataTag",artist.toString());
                         artistList.add(artist);
                     }
-
 
                     A_ArtistRecyclerView.setAdapter(new ArtistListAdapter(getActivity().getApplicationContext(),artistList));
                     A_ArtistRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity().getApplicationContext()));

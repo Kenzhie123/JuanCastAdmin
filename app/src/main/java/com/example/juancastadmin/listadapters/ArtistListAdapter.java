@@ -48,7 +48,7 @@ public class ArtistListAdapter extends RecyclerView.Adapter<ArtistListAdapter.Ar
     public void onBindViewHolder(@NonNull ArtistListViewHolder holder, int position) {
 
         Artist currentArtist = artistList.get(holder.getAdapterPosition());
-        StorageReference reference = storage.getReference().child("artists" + "/fut9hEYZAsAnFH5fWq5n.png");
+        StorageReference reference = storage.getReference().child("artists/" + currentArtist.getArtistProfile());
         String tagsText = "";
 
         for(String tag : currentArtist.getTags())
