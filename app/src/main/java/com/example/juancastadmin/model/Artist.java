@@ -1,17 +1,27 @@
 package com.example.juancastadmin.model;
 
+import androidx.annotation.Nullable;
+
 import java.util.ArrayList;
 
 public class Artist {
 
+    private String artistID;
     private String artistName;
     private ArrayList<String> tags;
-    private String artistProfile;
 
-    public Artist(String artistName, ArrayList<String> tags, String artistProfile) {
+    public Artist()
+    {
+
+    }
+    public Artist(String artistID,String artistName, ArrayList<String> tags) {
+        this.artistID = artistID;
         this.artistName = artistName;
         this.tags = tags;
-        this.artistProfile = artistProfile;
+    }
+
+    public String getArtistID() {
+        return artistID;
     }
 
     public String getArtistName() {
@@ -22,8 +32,9 @@ public class Artist {
         return tags;
     }
 
-    public String getArtistProfile() {
-        return artistProfile;
+
+    public void setArtistID(String artistID) {
+        this.artistID = artistID;
     }
 
     public void setArtistName(String artistName) {
@@ -34,16 +45,18 @@ public class Artist {
         this.tags = tags;
     }
 
-    public void setArtistProfile(String artistProfile) {
-        this.artistProfile = artistProfile;
-    }
 
     @Override
     public String toString() {
         return "Artist{" +
-                "artistName='" + artistName + '\'' +
-                ", tags=" + tags +
-                ", artistProfile='" + artistProfile + '\'' +
-                '}';
+                "artistID='" + artistID + '\'' +
+                ", artistName='" + artistName + '\'' +
+                ", tags=" + tags ;
+    }
+
+
+    @Override
+    public boolean equals(@Nullable Object obj) {
+        return artistID.equals(((Artist) obj).getArtistID());
     }
 }

@@ -7,6 +7,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -38,11 +39,13 @@ public class ArtistsFragment extends Fragment {
     ArrayList<Artist> artistList;
 
     RecyclerView A_ArtistRecyclerView;
+    SwipeRefreshLayout A_RefreshContainer;
     Button A_AddArtistButton;
 
 
-    public void setArtistList()
+    public void setArtistList(View v)
     {
+        A_RefreshContainer.setRefreshing(true);
         artistList = new ArrayList<>();
         db.collection("artists").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
@@ -53,13 +56,15 @@ public class ArtistsFragment extends Fragment {
                     for(DocumentSnapshot d : documents)
                     {
                         Map<String,Object> dataInfo = d.getData();
-                        Artist artist = new Artist( (String)dataInfo.get("artist_name"),(ArrayList<String>) dataInfo.get("tags"),d.getId());
+                        Artist artist = new Artist( d.getId(),(String)dataInfo.get("artist_name"),(ArrayList<String>) dataInfo.get("tags"));
                         Log.d("DataTag",artist.toString());
                         artistList.add(artist);
                     }
 
-                    A_ArtistRecyclerView.setAdapter(new ArtistListAdapter(getActivity().getApplicationContext(),artistList));
-                    A_ArtistRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity().getApplicationContext()));
+                    A_ArtistRecyclerView.setAdapter(new ArtistListAdapter(v.getContext(),artistList));
+                    A_ArtistRecyclerView.setLayoutManager(new LinearLayoutManager(v.getContext()));
+
+                    A_RefreshContainer.setRefreshing(false);
 
                 }
             }
@@ -80,6 +85,7 @@ public class ArtistsFragment extends Fragment {
 
         A_ArtistRecyclerView = v.findViewById(R.id.A_ArtistRecyclerView);
         A_AddArtistButton = v.findViewById(R.id.A_AddArtistButton);
+        A_RefreshContainer = v.findViewById(R.id.A_RefreshContainer);
 
 
         A_AddArtistButton.setOnClickListener(new View.OnClickListener() {
@@ -90,7 +96,15 @@ public class ArtistsFragment extends Fragment {
             }
         });
 
-        setArtistList();
+        A_RefreshContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                setArtistList(v);
+            }
+        });
+
+        setArtistList(v);
+
 
         return v;
     }
