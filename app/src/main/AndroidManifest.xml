@@ -15,6 +15,12 @@
         android:theme="@style/Theme.JuanCastAdmin"
         tools:targetApi="31">
         <activity
+            android:name=".AddPollArtists"
+            android:exported="false" />
+        <activity
+            android:name=".AddPoll"
+            android:exported="false" />
+        <activity
             android:name=".AddArtist"
             android:exported="false" />
         <activity
@@ -28,7 +34,7 @@
         </activity>
         <activity
             android:name=".Login"
-            android:exported="false"></activity>
+            android:exported="false" />
         <activity
             android:name=".Home"
             android:exported="false" />
