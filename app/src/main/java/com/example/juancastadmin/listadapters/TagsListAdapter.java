@@ -7,10 +7,12 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.juancastadmin.AddArtist;
+import com.example.juancastadmin.AddPollArtists;
 import com.example.juancastadmin.R;
 
 import java.util.ArrayList;
@@ -19,12 +21,20 @@ public class TagsListAdapter extends RecyclerView.Adapter<TagsListAdapter.TagsLi
 
     Context context;
     ArrayList<String> tagsList;
-    AddArtist addArtist;
+
+    AppCompatActivity activity;
     public TagsListAdapter(Context context, ArrayList<String> tagsList, AddArtist addArtist)
     {
         this.context = context;
         this.tagsList = tagsList;
-        this.addArtist = addArtist;
+        this.activity = addArtist;
+    }
+
+    public TagsListAdapter(Context context, ArrayList<String> tagsList, AddPollArtists addPollArtists)
+    {
+        this.context = context;
+        this.tagsList = tagsList;
+        this.activity = addPollArtists;
     }
 
     @NonNull
@@ -39,7 +49,16 @@ public class TagsListAdapter extends RecyclerView.Adapter<TagsListAdapter.TagsLi
         holder.TLI_ConstraintLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                addArtist.addToTagList(holder.getAdapterPosition());
+
+                if(activity.getClass() == AddPollArtists.class)
+                {
+                    ((AddPollArtists)activity).addToTagList(holder.getAdapterPosition());
+                }
+                else
+                {
+                    ((AddArtist)activity).addToTagList(holder.getAdapterPosition());
+                }
+
             }
         });
     }

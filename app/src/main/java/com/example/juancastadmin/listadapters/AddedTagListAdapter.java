@@ -8,9 +8,11 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.juancastadmin.AddArtist;
+import com.example.juancastadmin.AddPollArtists;
 import com.example.juancastadmin.R;
 
 import java.util.ArrayList;
@@ -20,13 +22,19 @@ public class AddedTagListAdapter extends RecyclerView.Adapter<AddedTagListAdapte
 
     Context context;
     ArrayList<String> addedTagList;
-    AddArtist addArtist;
+    AppCompatActivity activity;
 
     public AddedTagListAdapter(Context context, ArrayList<String> addedTagList, AddArtist addArtist)
     {
         this.context = context;
         this.addedTagList = addedTagList;
-        this.addArtist = addArtist;
+        this.activity = addArtist;
+    }
+    public AddedTagListAdapter(Context context, ArrayList<String> addedTagList, AddPollArtists addPollArtists)
+    {
+        this.context = context;
+        this.addedTagList = addedTagList;
+        this.activity = addPollArtists;
     }
 
 
@@ -42,7 +50,15 @@ public class AddedTagListAdapter extends RecyclerView.Adapter<AddedTagListAdapte
         holder.ATI_RemoveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                addArtist.removeFromTagList(holder.getAdapterPosition());
+                if(activity.getClass() == AddPollArtists.class)
+                {
+                    ((AddPollArtists)activity).removeFromTagList(holder.getAdapterPosition());
+                }
+                else
+                {
+                    ((AddArtist)activity).removeFromTagList(holder.getAdapterPosition());
+                }
+
             }
         });
     }
