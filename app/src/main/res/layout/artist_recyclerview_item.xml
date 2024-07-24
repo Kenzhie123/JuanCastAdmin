@@ -17,6 +17,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/ARI_Background"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="#FFFFFF">
@@ -41,6 +42,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
                 android:text="Name"
+                android:textColor="@color/normal_text_color"
                 android:textSize="16sp"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="@+id/ARI_ProfileImage"
@@ -55,6 +57,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Tags"
+                android:textColor="@color/normal_text_color"
                 app:layout_constraintBottom_toBottomOf="@+id/ARI_ProfileImage"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
