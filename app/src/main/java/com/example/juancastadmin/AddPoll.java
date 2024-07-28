@@ -1,14 +1,17 @@
 package com.example.juancastadmin;
 
+
 import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -27,12 +30,20 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.example.juancastadmin.helper.Tools;
 import com.example.juancastadmin.model.APAArtist;
+import com.example.juancastadmin.model.Poll;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.Firebase;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -61,17 +72,18 @@ public class AddPoll extends AppCompatActivity{
     EditText AP_PollNote;
     TextView APA_Overlay;
     ProgressBar APA_ProgressBar;
+    ProgressBar AP_BannerProgressBar;
 
     Calendar calendarDateFrom;
     Calendar calendarDateTo;
     Date dateNow = Calendar.getInstance().getTime();
 
-
     FirebaseFirestore db;
     FirebaseStorage storage;
     Bitmap banner;
+    Poll pollToEdit;
 
-    public void addPoll(ArrayList<String> artistList)
+    public void addPoll(ArrayList<String> artistList,ArrayList<String> addedTagList)
     {
         enableProgress();
         Map<String, Object> pollMap = new HashMap<>();
@@ -80,6 +92,7 @@ public class AddPoll extends AppCompatActivity{
         pollMap.put("date_to", Tools.dateToString(calendarDateTo.getTime()));
         pollMap.put("note",AP_PollNote.getText().toString().trim());
         pollMap.put("artists",artistList);
+        pollMap.put("tag_list",addedTagList);
 
 
         db.collection("voting_polls").add(pollMap).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
@@ -109,6 +122,109 @@ public class AddPoll extends AppCompatActivity{
                             }
                         }
                     });
+                }
+            }
+        });
+    }
+
+
+    public void updatePoll(ArrayList<String> artistList,ArrayList<String> addedTagList)
+    {
+        enableProgress();
+        Map<String, Object> pollMap = new HashMap<>();
+        pollMap.put("poll_title",AP_PollTitle.getText().toString().trim());
+        pollMap.put("date_from", Tools.dateToString(calendarDateFrom.getTime()));
+        pollMap.put("date_to", Tools.dateToString(calendarDateTo.getTime()));
+        pollMap.put("note",AP_PollNote.getText().toString().trim());
+        pollMap.put("artists",artistList);
+        pollMap.put("tag_list",addedTagList);
+
+
+        db.collection("voting_polls").document(pollToEdit.getId()).update(pollMap).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if(task.isSuccessful())
+                {
+                    StorageReference reference = storage.getReference();
+                    StorageReference bannerReference = reference.child("voting_poll_banners").child(pollToEdit.getId());
+                    Bitmap pollBannerBitmap = ((BitmapDrawable)AP_BannerImage.getDrawable()).getBitmap();
+                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                    pollBannerBitmap.compress(Bitmap.CompressFormat.JPEG,100,baos);
+                    byte[] data = baos.toByteArray();
+                    bannerReference.putBytes(data).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+                            if(task.isSuccessful())
+                            {
+                                Toast.makeText(getApplicationContext(),"Poll successfully updated",Toast.LENGTH_LONG).show();
+                                disableProgress();
+                                finish();
+                            }
+                            else
+                            {
+                                Toast.makeText(getApplicationContext(),"Poll update unsuccessful: " + task.getException().getMessage(),Toast.LENGTH_LONG).show();
+                                disableProgress();
+                            }
+                        }
+                    });
+                }
+            }
+        });
+    }
+
+    public void setToEdit(String pollID)
+    {
+        AP_AddBannerImageButton.setVisibility(View.GONE);
+        AP_BannerProgressBar.setVisibility(View.VISIBLE);
+        db.collection("voting_polls").document(pollID).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if(task.isSuccessful())
+                {
+                    DocumentSnapshot doc = task.getResult();
+                    if(doc != null)
+                    {
+                        Map<String,Object> data = doc.getData();
+                        pollToEdit = new Poll(doc.getId(),
+                                (String)data.get("poll_title"),
+                                Tools.StringToDate((String)data.get("date_from")),
+                                Tools.StringToDate((String)data.get("date_to")),
+                                (String)data.get("note"),
+                                (ArrayList<String>)data.get("artists"),
+                                (ArrayList<String>)data.get("tag_list"));
+
+                        Log.d("DATATAG", (String) data.get("poll_title"));
+                        Log.d("DATATAG",pollToEdit.toString());
+                        calendarDateFrom = Calendar.getInstance();
+                        calendarDateTo = Calendar.getInstance();
+                        calendarDateFrom.setTime(pollToEdit.getDateFrom());
+                        calendarDateTo.setTime(pollToEdit.getDateTo());
+                        AP_PollTitle.setText(pollToEdit.getTitle());
+                        AP_DatePickerFrom.setText(Tools.dateToString(pollToEdit.getDateFrom()));
+                        AP_DatePickerTo.setText(Tools.dateToString(pollToEdit.getDateTo()));
+                        AP_PollNote.setText(pollToEdit.getNote());
+                        storage = FirebaseStorage.getInstance();
+                        StorageReference reference = storage.getReference().child("voting_poll_banners").child(pollToEdit.getId());
+
+                        Glide.with(getApplicationContext()).load(reference).diskCacheStrategy(DiskCacheStrategy.NONE)
+                                .skipMemoryCache(true).listener(new RequestListener<Drawable>() {
+                                    @Override
+                                    public boolean onLoadFailed(@Nullable GlideException e, @Nullable Object model, @NonNull Target<Drawable> target, boolean isFirstResource) {
+                                        AP_AddBannerImageButton.setVisibility(View.VISIBLE);
+                                        AP_BannerProgressBar.setVisibility(View.GONE);
+                                        return false;
+                                    }
+
+                                    @Override
+                                    public boolean onResourceReady(@NonNull Drawable resource, @NonNull Object model, Target<Drawable> target, @NonNull DataSource dataSource, boolean isFirstResource) {
+                                        AP_AddBannerImageButton.setVisibility(View.GONE);
+                                        AP_BannerProgressBar.setVisibility(View.GONE);
+                                        return false;
+                                    }
+                                }).into(AP_BannerImage);
+
+                    }
+
                 }
             }
         });
@@ -177,6 +293,19 @@ public class AddPoll extends AppCompatActivity{
         AP_PollNote = findViewById(R.id.AP_PollNote);
         APA_Overlay = findViewById(R.id.APA_Overlay);
         APA_ProgressBar = findViewById(R.id.APA_ProgressBar);
+        AP_BannerProgressBar = findViewById(R.id.AP_BannerProgressBar);
+
+        try{
+            if(getIntent().getExtras().get("pollID") != null)
+            {
+                setToEdit(getIntent().getExtras().getString("pollID"));
+            }
+        }catch (Exception e)
+        {
+
+        }
+
+
 
 
         AP_BackButton.setOnClickListener(new View.OnClickListener() {
@@ -226,7 +355,7 @@ public class AddPoll extends AppCompatActivity{
                             {
                                 calendarDateFrom = calendarDateFromTemp;
                                 AP_DatePickerFrom.setText(month+"/"+dayOfMonth+"/"+year);
-                                AP_DatePickerFrom.setTextColor(ContextCompat.getColor(getApplicationContext(),R.color.normal_text_color));
+                                AP_DatePickerFrom.setTextColor(ContextCompat.getColor(getApplicationContext(),R.color.text_color_dark));
                             }
                         }
                         else
@@ -270,7 +399,7 @@ public class AddPoll extends AppCompatActivity{
                             if (changeDate) {
                                 calendarDateTo = calendarDateToTemp;
                                 AP_DatePickerTo.setText(month + "/" + dayOfMonth + "/" + year);
-                                AP_DatePickerTo.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.normal_text_color));
+                                AP_DatePickerTo.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.text_color_dark));
                             }
                         }
                         else
@@ -307,6 +436,11 @@ public class AddPoll extends AppCompatActivity{
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(),AddPollArtists.class);
+                if(pollToEdit != null)
+                {
+                    intent.putExtra("artistsIDList",pollToEdit.getArtistIDList());
+                    intent.putExtra("tagList",pollToEdit.getTagList());
+                }
                 startActivityForResult(intent,11);
             }
         });
@@ -332,8 +466,21 @@ public class AddPoll extends AppCompatActivity{
         }
         if(requestCode == 11)
         {
-            ArrayList<String> artistList = (ArrayList<String>) data.getStringArrayListExtra("artistList");
-            addPoll(artistList);
+            if(data != null && data.getStringArrayListExtra("artistList") != null && data.getStringArrayListExtra("addedTagList") != null)
+            {
+                ArrayList<String> artistList = (ArrayList<String>) data.getStringArrayListExtra("artistList");
+                ArrayList<String> tagList = (ArrayList<String>) data.getStringArrayListExtra("addedTagList");
+                if(pollToEdit != null)
+                {
+                    updatePoll(artistList,tagList);
+                }
+                else
+                {
+                    addPoll(artistList,tagList);
+                }
+
+            }
+
         }
     }
 

@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -19,6 +20,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
@@ -54,9 +56,10 @@ public class APAArtistListAdapter extends RecyclerView.Adapter<APAArtistListAdap
         StorageReference reference = storage.getReference();
 
         APAArtist currentArtist = artistList.get(holder.getAdapterPosition());
-
+        holder.APALI_ProfileProgressBar.setVisibility(View.VISIBLE);
         StorageReference imageRef = reference.child("artists").child(currentArtist.getArtistID());
-        Glide.with(context).load(imageRef).listener(new RequestListener<Drawable>() {
+        Glide.with(context).load(imageRef).diskCacheStrategy(DiskCacheStrategy.NONE)
+                .skipMemoryCache(true).listener(new RequestListener<Drawable>() {
             @Override
             public boolean onLoadFailed(@Nullable GlideException e, @Nullable Object model, @NonNull Target<Drawable> target, boolean isFirstResource) {
                 holder.APALI_ProfileProgressBar.setVisibility(View.GONE);
@@ -72,6 +75,12 @@ public class APAArtistListAdapter extends RecyclerView.Adapter<APAArtistListAdap
         }).into(holder.APALI_ProfileImage);
         holder.APALI_ArtistName.setText(currentArtist.getArtistName());
         holder.APALI_CheckBox.setChecked(currentArtist.isChecked());
+        holder.APALI_CheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                artistList.get(holder.getAdapterPosition()).setChecked(isChecked);
+            }
+        });
     }
 
     @Override

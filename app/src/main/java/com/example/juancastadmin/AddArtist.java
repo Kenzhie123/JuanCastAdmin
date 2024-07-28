@@ -1,9 +1,12 @@
 package com.example.juancastadmin;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.inputmethodservice.Keyboard;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -16,6 +19,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -23,6 +27,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -36,6 +41,9 @@ import com.bumptech.glide.request.target.Target;
 import com.example.juancastadmin.listadapters.AddedTagListAdapter;
 import com.example.juancastadmin.listadapters.TagsListAdapter;
 import com.example.juancastadmin.model.Artist;
+import com.google.android.flexbox.FlexDirection;
+import com.google.android.flexbox.FlexboxLayoutManager;
+import com.google.android.flexbox.JustifyContent;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.Firebase;
@@ -60,6 +68,7 @@ public class AddArtist extends AppCompatActivity {
     public RecyclerView AA_TagListRecyclerView;
     public Button AA_BackButton;
     public Button AA_AddArtistButton;
+    public Button AA_DeleteArtistButton;
     public TextView AA_Title;
     public TextView AA_ArtistAddProfileImage;
     public TextView AA_Overlay;
@@ -96,9 +105,9 @@ public class AddArtist extends AppCompatActivity {
         tagsListAdapter = new TagsListAdapter(getApplicationContext(),tagList,this);
         addedTagListAdapter = new AddedTagListAdapter(getApplicationContext(),addedTagList,this);
         AA_TagListRecyclerView.setAdapter(tagsListAdapter);
-        AA_TagListRecyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+        AA_TagListRecyclerView.setLayoutManager(new FlexboxLayoutManager(getApplicationContext(),FlexDirection.ROW));
         AA_AddedTagsListRecyclerView.setAdapter(addedTagListAdapter);
-        AA_AddedTagsListRecyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext(),LinearLayoutManager.HORIZONTAL,false));
+        AA_AddedTagsListRecyclerView.setLayoutManager(new FlexboxLayoutManager(getApplicationContext(),FlexDirection.ROW));
     }
     public void refreshTagList()
     {
@@ -119,41 +128,50 @@ public class AddArtist extends AppCompatActivity {
         refreshTagList();
     }
 
-    public void addUserToDB()
+    public void addArtistToDB()
     {
 
 
-        Map<String,Object> userMap = new HashMap<>();
-        userMap.put("artist_name", AA_ArtistName.getText().toString().trim());
-        userMap.put("tags", addedTagList);
+        Map<String,Object> artistMap = new HashMap<>();
+        artistMap.put("artist_name", AA_ArtistName.getText().toString().trim());
+        artistMap.put("tags", addedTagList);
 
-        db.collection("artists").add(userMap).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
+        db.collection("artists").add(artistMap).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
             @Override
             public void onComplete(@NonNull Task<DocumentReference> task) {
                 if(task.isSuccessful())
                 {
                     if(AA_ArtistProfileImage.getDrawable() != null)
                     {
-                        DocumentReference docRef = task.getResult();
-                        Bitmap artistProfileBitmap = ((BitmapDrawable)AA_ArtistProfileImage.getDrawable()).getBitmap();
-                        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                        artistProfileBitmap.compress(Bitmap.CompressFormat.JPEG,100,baos);
-                        byte[] data = baos.toByteArray();
-                        StorageReference ref = reference.child("artists/" + docRef.getId());
-                        ref.putBytes(data).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
-                            @Override
-                            public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
-                                if(task.isSuccessful())
-                                {
-                                    Toast.makeText(getApplicationContext(),"Artist Added", Toast.LENGTH_LONG).show();
-                                    finish();
+                        if(artistProfile != null)
+                        {
+                            DocumentReference docRef = task.getResult();
+                            Bitmap artistProfileBitmap = ((BitmapDrawable)AA_ArtistProfileImage.getDrawable()).getBitmap();
+                            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                            artistProfileBitmap.compress(Bitmap.CompressFormat.JPEG,100,baos);
+                            byte[] data = baos.toByteArray();
+                            StorageReference ref = reference.child("artists/" + docRef.getId());
+                            ref.putBytes(data).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+                                @Override
+                                public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+                                    if(task.isSuccessful())
+                                    {
+                                        Toast.makeText(getApplicationContext(),"Artist Added", Toast.LENGTH_LONG).show();
+                                        finish();
+                                    }
+                                    else
+                                    {
+                                        Toast.makeText(getApplicationContext(),"Failed to add artist", Toast.LENGTH_LONG).show();
+                                    }
                                 }
-                                else
-                                {
-                                    Toast.makeText(getApplicationContext(),"Failed to add artist", Toast.LENGTH_LONG).show();
-                                }
-                            }
-                        });
+                            });
+                        }
+                        else
+                        {
+                            Toast.makeText(getApplicationContext(),"Artist Added", Toast.LENGTH_LONG).show();
+                            finish();
+                        }
+
                     }
                 }
                 else
@@ -164,12 +182,12 @@ public class AddArtist extends AppCompatActivity {
         });
     }
 
-    public void updateUserInDB()
+    public void updateArtistInDB()
     {
-        Map<String,Object> updateUser = new HashMap<>();
-        updateUser.put("artist_name",AA_ArtistName.getText().toString().trim());
-        updateUser.put("tags",addedTagList);
-        db.collection("artists").document(currentUpdateArtist.getArtistID()).update(updateUser).addOnCompleteListener(new OnCompleteListener<Void>() {
+        Map<String,Object> updateArtist = new HashMap<>();
+        updateArtist.put("artist_name",AA_ArtistName.getText().toString().trim());
+        updateArtist.put("tags",addedTagList);
+        db.collection("artists").document(currentUpdateArtist.getArtistID()).update(updateArtist).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if(task.isSuccessful())
@@ -191,6 +209,37 @@ public class AddArtist extends AppCompatActivity {
                             {
                                 Toast.makeText(getApplicationContext(),"Failed to update artist", Toast.LENGTH_LONG).show();
                                 disableProgress();
+                            }
+                        }
+                    });
+                }
+            }
+        });
+    }
+
+    public void deleteArtist()
+    {
+        enableProgress();
+        db.collection("artists").document(currentUpdateArtist.getArtistID()).delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if(task.isSuccessful())
+                {
+                    StorageReference ref = reference.child("artists/" + currentUpdateArtist.getArtistID());
+                    ref.delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if(task.isSuccessful())
+                            {
+                                Toast.makeText(getApplicationContext(),"Artist Successfully Deleted",Toast.LENGTH_LONG).show();
+                                disableProgress();
+                                finish();
+                            }
+                            else
+                            {
+                                Toast.makeText(getApplicationContext(),"Artist Successfully Deleted",Toast.LENGTH_LONG).show();
+                                disableProgress();
+                                finish();
                             }
                         }
                     });
@@ -248,13 +297,16 @@ public class AddArtist extends AppCompatActivity {
                                 }).into(AA_ArtistProfileImage);
 
                         setTagsToUpdate();
-                        AA_AddArtistButton.setText("Update");
+                        AA_AddArtistButton.setText("UPDATE");
                         AA_Title.setText("Update Artist");
                     }
                 }
             });
         }
     }
+
+
+
 
     public void disable(){
 
@@ -310,6 +362,7 @@ public class AddArtist extends AppCompatActivity {
         AA_TagListRecyclerView = findViewById(R.id.AA_TagListRecyclerView);
         AA_BackButton = findViewById(R.id.AA_BackButton);
         AA_AddArtistButton = findViewById(R.id.AA_AddArtistButton);
+        AA_DeleteArtistButton = findViewById(R.id.AA_DeleteArtistButton);
         AA_ArtistAddProfileImage = findViewById(R.id.AA_ArtistAddProfileImage);
         AA_ArtistProfileImage = findViewById(R.id.AA_ArtistProfileImage);
         AA_ArtistName = findViewById(R.id.AA_ArtistName);
@@ -340,6 +393,28 @@ public class AddArtist extends AppCompatActivity {
                 startActivityForResult(intent,10);
             }
         });
+        AA_DeleteArtistButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(AddArtist.this);
+                builder.setTitle("Delete Artist");
+                builder.setMessage("Are you sure you want to delete this artist?")
+                        .setCancelable(true)
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                deleteArtist();
+                            }
+                        }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.cancel();
+                            }
+                        });
+                AlertDialog alertDialog = builder.create();
+                alertDialog.show();
+            }
+        });
 
         AA_ArtistProfileImage.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -356,12 +431,12 @@ public class AddArtist extends AppCompatActivity {
                 enableProgress();
                 if(!setUpdate)
                 {
-                    addUserToDB();
+                    addArtistToDB();
                 }
                 else
                 {
 
-                    updateUserInDB();
+                    updateArtistInDB();
                 }
             }
         });
@@ -370,11 +445,11 @@ public class AddArtist extends AppCompatActivity {
         {
             setUpdate = getIntent().getExtras().getBoolean("isUpdate");
             artistID = getIntent().getExtras().getString("artistID");
+            AA_DeleteArtistButton.setVisibility(View.VISIBLE);
             setToUpdate();
         }
         else
         {
-            Toast.makeText(getApplicationContext(),"NO", Toast.LENGTH_LONG).show();
             initTagList();
         }
 
@@ -398,7 +473,7 @@ public class AddArtist extends AppCompatActivity {
                 imageSet = true;
             }catch (Exception e)
             {
-                Toast.makeText(getApplicationContext(),e.getMessage(),Toast.LENGTH_LONG).show();
+//                Toast.makeText(getApplicationContext(),e.getMessage(),Toast.LENGTH_LONG).show();
             }
 
         }

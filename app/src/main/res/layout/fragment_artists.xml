@@ -4,23 +4,26 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/add_square_svgrepo_com"
+    android:backgroundTint="@color/white"
     tools:context=".ArtistsFragment">
 
     <!-- TODO: Update blank fragment layout -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/juans">
+        android:background="#FFFFFF">
 
         <EditText
             android:id="@+id/A_SearchField"
             android:layout_width="0dp"
             android:layout_height="40dp"
-            android:layout_marginStart="40dp"
-            android:layout_marginTop="50dp"
-            android:layout_marginEnd="10dp"
-            android:background="@drawable/whitebackground"
+            android:layout_marginStart="30dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="30dp"
+            android:background="@drawable/curved_box_border_10"
             android:ems="10"
+            android:fontFamily="@font/montserrat_regular"
             android:hint="Search"
             android:inputType="text"
             android:padding="5dp"
@@ -28,10 +31,9 @@
             android:textColorHint="#777777"
             android:textSize="16sp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/A_AddArtistButton"
-            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView12"
             app:layout_constraintVertical_bias="0.0" />
 
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -39,12 +41,14 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_marginStart="30dp"
-            android:layout_marginTop="20dp"
             android:layout_marginEnd="30dp"
+            android:layout_marginBottom="20dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView3">
+            app:layout_constraintTop_toBottomOf="@+id/A_FilterButton"
+            app:layout_constraintVertical_bias="1.0"
+            tools:visibility="gone">
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/A_ArtistRecyclerView"
@@ -63,38 +67,103 @@
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
 
-
-        <Button
-            android:id="@+id/A_AddArtistButton"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_marginEnd="40dp"
-            android:background="@drawable/round_add_box_24"
-            android:backgroundTint="#FFFFFF"
-            android:backgroundTintMode="screen"
-            android:drawableTint="#FFFFFF"
-            android:foregroundTint="#FFFFFF"
-            app:backgroundTint="#FFFFFF"
-            app:iconTint="#FFFFFF"
-            app:layout_constraintBottom_toBottomOf="@+id/A_SearchField"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/A_SearchField"
-            app:layout_constraintTop_toTopOf="@+id/A_SearchField" />
-
         <TextView
-            android:id="@+id/textView3"
-            android:layout_width="0dp"
-            android:layout_height="1px"
-            android:layout_marginStart="30dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginEnd="30dp"
-            android:background="#FFFFFF"
+            android:id="@+id/textView12"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:fontFamily="@font/montserrat_bold"
+            android:text="Artists"
+            android:textColor="@color/primary"
+            android:textSize="30sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0" />
+
+        <TextView
+            android:id="@+id/textView13"
+            android:layout_width="40dp"
+            android:layout_height="0dp"
+            android:background="@drawable/curved_box_gray_corner_10"
+            android:backgroundTint="@color/primary"
+            app:layout_constraintBottom_toBottomOf="@+id/A_SearchField"
+            app:layout_constraintEnd_toEndOf="@+id/A_SearchField"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="@+id/A_SearchField"
+            app:layout_constraintTop_toTopOf="@+id/A_SearchField" />
+
+        <TextView
+            android:id="@+id/textView14"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="5dp"
+            android:layout_marginBottom="5dp"
+            android:background="@drawable/search_svgrepo_com"
+            android:backgroundTint="@color/white"
+            app:layout_constraintBottom_toBottomOf="@+id/textView13"
+            app:layout_constraintEnd_toEndOf="@+id/A_SearchField"
+            app:layout_constraintStart_toStartOf="@+id/textView13"
+            app:layout_constraintTop_toTopOf="@+id/textView13" />
+
+        <Button
+            android:id="@+id/A_FilterButton"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_marginEnd="10dp"
+            android:background="@drawable/filter_svgrepo_com"
+            app:backgroundTint="@color/primary"
+            app:layout_constraintBottom_toBottomOf="@+id/textView16"
+            app:layout_constraintEnd_toStartOf="@+id/textView16"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toStartOf="@+id/A_SearchField"
+            app:layout_constraintTop_toTopOf="@+id/textView16" />
+
+        <TextView
+            android:id="@+id/textView16"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:fontFamily="@font/montserrat_regular"
+            android:text="Filter"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/A_SearchField"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/A_FilterButton"
             app:layout_constraintTop_toBottomOf="@+id/A_SearchField"
             app:layout_constraintVertical_bias="0.0" />
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginBottom="20dp"
+            android:background="#FFFFFF"
+            android:backgroundTint="#FFFFFF"
+            app:cardCornerRadius="360dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="1.0">
+
+            <Button
+                android:id="@+id/A_AddArtistButton"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_margin="0dp"
+                android:background="@drawable/add_circle_svgrepo_com"
+                android:backgroundTint="#FFFFFF"
+                android:backgroundTintMode="screen"
+                android:padding="0dp"
+                app:backgroundTint="@color/primary" />
+        </androidx.cardview.widget.CardView>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </FrameLayout>

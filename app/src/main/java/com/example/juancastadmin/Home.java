@@ -16,11 +16,12 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
+import com.ismaeldivita.chipnavigation.ChipNavigationBar;
 
 public class Home extends AppCompatActivity {
 
     FrameLayout H_CurrentFragmentContainer;
-    BottomNavigationView H_BottomNavigationBar;
+    ChipNavigationBar H_BottomNavigationBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,32 +38,28 @@ public class Home extends AppCompatActivity {
         H_BottomNavigationBar = findViewById(R.id.H_BottomNavigationBar);
 
 
-
-        H_BottomNavigationBar.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
+        H_BottomNavigationBar.setItemSelected(R.id.menu_home,true);
+        H_BottomNavigationBar.setOnItemSelectedListener(new ChipNavigationBar.OnItemSelectedListener() {
             @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-
-                if(item.getItemId() == R.id.menu_home)
+            public void onItemSelected(int i) {
+                if(i == R.id.menu_home)
                     changeFragment(new HomeFragment());
-                if(item.getItemId() == R.id.menu_artists)
+                if(i== R.id.menu_artists)
                     changeFragment(new ArtistsFragment());
-                if(item.getItemId() == R.id.menu_poll)
+                if(i == R.id.menu_poll)
                     changeFragment(new PollFragment());
-                if(item.getItemId() == R.id.menu_profile)
+                if(i == R.id.menu_profile)
                     changeFragment(new ProfileFragment());
-
-                return true;
             }
         });
-
     }
 
     public void changeFragment(Fragment fragment)
     {
-        FragmentManager fragmentManager  = getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.H_CurrentFragmentContainer,fragment);
-        fragmentTransaction.commit();
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.H_CurrentFragmentContainer,fragment)
+                .commit();
     }
 
 }

@@ -2,11 +2,13 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="primary">#03A9F4</color>
-    <color name="primary_light">#D003A9F4</color>
+    <color name="primary">#5271ff</color>
+    <color name="primary_light">#8B9FFF</color>
     <color name="danger">#ff385a</color>
     <color name="overlay_dark">#48000000</color>
-    <color name="normal_text_color">#2e2e2e</color>
+    <color name="text_color_dark">#B3000000</color>
+    <color name="text_color_light">#888888</color>
     <color name="gray">#3C3C3C</color>
-    <color name="light_gray">#686868</color>
+    <color name="light_gray">#E3E3E3</color>
+
 </resources>

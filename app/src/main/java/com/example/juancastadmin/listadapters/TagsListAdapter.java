@@ -9,10 +9,12 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.juancastadmin.AddArtist;
 import com.example.juancastadmin.AddPollArtists;
+import com.example.juancastadmin.PollFragment;
 import com.example.juancastadmin.R;
 
 import java.util.ArrayList;
@@ -21,21 +23,23 @@ public class TagsListAdapter extends RecyclerView.Adapter<TagsListAdapter.TagsLi
 
     Context context;
     ArrayList<String> tagsList;
-
     AppCompatActivity activity;
-    public TagsListAdapter(Context context, ArrayList<String> tagsList, AddArtist addArtist)
+    Fragment fragment;
+    public TagsListAdapter(Context context, ArrayList<String> tagsList, AppCompatActivity activity)
     {
         this.context = context;
         this.tagsList = tagsList;
-        this.activity = addArtist;
+        this.activity = activity;
     }
 
-    public TagsListAdapter(Context context, ArrayList<String> tagsList, AddPollArtists addPollArtists)
+    public TagsListAdapter(Context context, ArrayList<String> tagsList, Fragment fragment)
     {
         this.context = context;
         this.tagsList = tagsList;
-        this.activity = addPollArtists;
+        this.fragment = fragment;
     }
+
+
 
     @NonNull
     @Override
@@ -50,14 +54,26 @@ public class TagsListAdapter extends RecyclerView.Adapter<TagsListAdapter.TagsLi
             @Override
             public void onClick(View v) {
 
-                if(activity.getClass() == AddPollArtists.class)
+                if(activity != null)
                 {
-                    ((AddPollArtists)activity).addToTagList(holder.getAdapterPosition());
+                    if(activity.getClass() == AddPollArtists.class)
+                    {
+                        ((AddPollArtists)activity).addToTagList(holder.getAdapterPosition());
+                    }
+                    else if(activity.getClass() == AddArtist.class)
+                    {
+                        ((AddArtist)activity).addToTagList(holder.getAdapterPosition());
+                    }
                 }
                 else
                 {
-                    ((AddArtist)activity).addToTagList(holder.getAdapterPosition());
+                    if(fragment.getClass() == PollFragment.class)
+                    {
+                        ((PollFragment)fragment).addToTagList(holder.getAdapterPosition());
+                    }
                 }
+
+
 
             }
         });

@@ -9,46 +9,89 @@
     tools:context=".AddPollArtists">
 
     <TextView
-        android:id="@+id/AA_Title"
+        android:id="@+id/textView19"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Select Poll Artists"
-        android:textColor="#000000"
-        android:textSize="16sp"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="20dp"
+        android:fontFamily="@font/montserrat_bold"
+        android:text="Artists List"
+        android:textColor="@color/primary"
+        android:textSize="14sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="@+id/APA_BackButton"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/APA_BackButton" />
-
-    <Button
-        android:id="@+id/APA_BackButton"
-        android:layout_width="25dp"
-        android:layout_height="25dp"
-        android:layout_marginStart="25dp"
-        android:layout_marginTop="25dp"
-        android:background="@drawable/round_arrow_back_24"
-        app:backgroundTint="@color/primary"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/APA_AddedTagListRecyclerView"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="20dp"
+        android:fontFamily="@font/montserrat_bold"
+        android:text="Tag List"
+        android:textColor="@color/primary"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/AA_Title"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <TextView
+        android:id="@+id/AA_Title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:fontFamily="@font/montserrat_bold"
+        android:text="Poll Artists"
+        android:textColor="@color/primary"
+        android:textSize="30sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0" />
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:layout_marginStart="30dp"
+        app:cardBackgroundColor="#ffffff"
+        app:cardCornerRadius="90dp"
+        app:layout_constraintBottom_toBottomOf="@+id/AA_Title"
+        app:layout_constraintEnd_toStartOf="@+id/AA_Title"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/AA_Title">
+
+        <Button
+            android:id="@+id/APA_BackButton"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:background="@drawable/round_alt_arrow_left_svgrepo_com"
+            app:backgroundTint="@color/primary" />
+    </androidx.cardview.widget.CardView>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/APA_AddedTagListRecyclerView"
         android:layout_width="0dp"
-        android:layout_height="40dp"
+        android:layout_height="wrap_content"
         android:layout_marginStart="30dp"
-        android:layout_marginTop="5dp"
         android:layout_marginEnd="30dp"
-        android:background="@drawable/curved_box_gray_corner_10"
-        android:backgroundTint="@color/primary_light"
+        android:minHeight="30dp"
         app:flow_horizontalAlign="center"
         app:flow_verticalAlign="center"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView2"
         app:layout_constraintVertical_bias="0.0" />
@@ -59,64 +102,26 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="30dp"
         android:layout_marginTop="20dp"
-        android:text="Tags"
-        android:textColor="@color/normal_text_color"
+        android:fontFamily="@font/montserrat_bold"
+        android:text="Selected Tags"
+        android:textColor="@color/primary"
         android:textSize="14sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/AA_Title"
-        app:layout_constraintVertical_bias="0.0" />
-
-    <ScrollView
-        android:id="@+id/scrollView2"
-        android:layout_width="0dp"
-        android:layout_height="150dp"
-        android:layout_marginStart="30dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="30dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/APA_AddedTagListRecyclerView"
-        app:layout_constraintVertical_bias="0.0">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/APA_TagListRecyclerView"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
-        </LinearLayout>
-    </ScrollView>
-
-    <TextView
-        android:id="@+id/textView4"
-        android:layout_width="0dp"
-        android:layout_height="1dp"
-        android:layout_marginTop="10dp"
-        android:background="@color/primary"
-        android:text="TextView"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/scrollView2"
-        app:layout_constraintStart_toStartOf="@+id/scrollView2"
-        app:layout_constraintTop_toBottomOf="@+id/scrollView2"
+        app:layout_constraintTop_toBottomOf="@+id/APA_TagListRecyclerView"
         app:layout_constraintVertical_bias="0.0" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/APA_ArtistListRecyclerView"
+        android:id="@+id/APA_TagListRecyclerView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/scrollView2"
+        app:layout_constraintEnd_toEndOf="@+id/APA_AddedTagListRecyclerView"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/scrollView2"
+        app:layout_constraintStart_toStartOf="@+id/APA_AddedTagListRecyclerView"
         app:layout_constraintTop_toBottomOf="@+id/textView4"
         app:layout_constraintVertical_bias="0.0" />
 
@@ -125,16 +130,42 @@
         android:layout_width="0dp"
         android:layout_height="45dp"
         android:layout_marginTop="20dp"
-        android:text="Add"
+        android:text="ADD"
         android:textColor="@color/white"
         android:textSize="16sp"
         android:textStyle="bold"
         app:backgroundTint="@color/primary"
         app:cornerRadius="5dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/APA_ArtistListRecyclerView"
-        app:layout_constraintStart_toStartOf="@+id/APA_ArtistListRecyclerView"
-        app:layout_constraintTop_toBottomOf="@+id/APA_ArtistListRecyclerView"
+        app:layout_constraintEnd_toEndOf="@+id/scrollView2"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/scrollView2"
+        app:layout_constraintTop_toBottomOf="@+id/scrollView2"
         app:layout_constraintVertical_bias="0.0" />
+
+    <ScrollView
+        android:id="@+id/scrollView2"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:layout_marginStart="30dp"
+        android:layout_marginEnd="30dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView19"
+        app:layout_constraintVertical_bias="0.0">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/APA_ArtistListRecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp" />
+        </LinearLayout>
+    </ScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -9,10 +9,12 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.juancastadmin.AddArtist;
 import com.example.juancastadmin.AddPollArtists;
+import com.example.juancastadmin.PollFragment;
 import com.example.juancastadmin.R;
 
 import java.util.ArrayList;
@@ -23,19 +25,22 @@ public class AddedTagListAdapter extends RecyclerView.Adapter<AddedTagListAdapte
     Context context;
     ArrayList<String> addedTagList;
     AppCompatActivity activity;
+    Fragment fragment;
 
-    public AddedTagListAdapter(Context context, ArrayList<String> addedTagList, AddArtist addArtist)
+    public AddedTagListAdapter(Context context, ArrayList<String> addedTagList, AppCompatActivity activity)
     {
         this.context = context;
         this.addedTagList = addedTagList;
-        this.activity = addArtist;
+        this.activity = activity;
     }
-    public AddedTagListAdapter(Context context, ArrayList<String> addedTagList, AddPollArtists addPollArtists)
+
+    public AddedTagListAdapter(Context context, ArrayList<String> addedTagList, Fragment fragment)
     {
         this.context = context;
         this.addedTagList = addedTagList;
-        this.activity = addPollArtists;
+        this.fragment = fragment;
     }
+
 
 
     @NonNull
@@ -50,14 +55,26 @@ public class AddedTagListAdapter extends RecyclerView.Adapter<AddedTagListAdapte
         holder.ATI_RemoveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(activity.getClass() == AddPollArtists.class)
+                if(activity != null)
                 {
-                    ((AddPollArtists)activity).removeFromTagList(holder.getAdapterPosition());
+                    if(activity.getClass() == AddPollArtists.class)
+                    {
+                        ((AddPollArtists)activity).removeFromTagList(holder.getAdapterPosition());
+                    }
+                    else
+                    {
+                        ((AddArtist)activity).removeFromTagList(holder.getAdapterPosition());
+                    }
                 }
                 else
                 {
-                    ((AddArtist)activity).removeFromTagList(holder.getAdapterPosition());
+                    if(fragment.getClass() == PollFragment.class)
+                    {
+                        ((PollFragment)fragment).removeFromTagList(holder.getAdapterPosition());
+                    }
                 }
+
+
 
             }
         });

@@ -11,47 +11,45 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/juans">
+        android:background="#ffffff">
 
         <TextView
-            android:id="@+id/textView3"
-            android:layout_width="0dp"
-            android:layout_height="1px"
-            android:layout_marginStart="30dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginEnd="30dp"
-            android:background="#FFFFFF"
+            android:id="@+id/textView22"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:fontFamily="@font/montserrat_bold"
+            android:text="Polls"
+            android:textColor="@color/primary"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/P_SearchField"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/P_SearchField"
+            app:layout_constraintTop_toBottomOf="@+id/P_AddedTagListRecyclerView"
+            app:layout_constraintVertical_bias="0.0" />
+
+        <TextView
+            android:id="@+id/textView18"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:fontFamily="@font/montserrat_bold"
+            android:text="Voting Poll"
+            android:textColor="@color/primary"
+            android:textSize="30sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/P_SearchField"
+            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.0" />
-
-        <Button
-            android:id="@+id/P_AddPollButton"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_marginEnd="40dp"
-            android:background="@drawable/round_add_box_24"
-            android:backgroundTint="#FFFFFF"
-            android:backgroundTintMode="screen"
-            android:drawableTint="#FFFFFF"
-            android:foregroundTint="#FFFFFF"
-            app:backgroundTint="#FFFFFF"
-            app:iconTint="#FFFFFF"
-            app:layout_constraintBottom_toBottomOf="@+id/P_SearchField"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/P_SearchField"
-            app:layout_constraintTop_toTopOf="@+id/P_SearchField" />
 
         <EditText
             android:id="@+id/P_SearchField"
             android:layout_width="0dp"
             android:layout_height="40dp"
-            android:layout_marginStart="40dp"
-            android:layout_marginTop="50dp"
-            android:layout_marginEnd="10dp"
+            android:layout_marginStart="30dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="30dp"
             android:background="@drawable/whitebackground"
             android:ems="10"
             android:hint="Search"
@@ -61,24 +59,79 @@
             android:textColorHint="#777777"
             android:textSize="16sp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/P_AddPollButton"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView18"
             app:layout_constraintVertical_bias="0.0" />
+
+        <TextView
+            android:id="@+id/textView6"
+            android:layout_width="40dp"
+            android:layout_height="0dp"
+            android:background="@drawable/curved_box_gray_corner_10"
+            android:backgroundTint="@color/primary"
+            app:layout_constraintBottom_toBottomOf="@+id/P_SearchField"
+            app:layout_constraintEnd_toEndOf="@+id/P_SearchField"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="@+id/P_SearchField"
+            app:layout_constraintTop_toTopOf="@+id/P_SearchField" />
+
+        <TextView
+            android:id="@+id/textView17"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="5dp"
+            android:layout_marginBottom="5dp"
+            android:background="@drawable/search_svgrepo_com"
+            android:backgroundTint="@color/white"
+            app:layout_constraintBottom_toBottomOf="@+id/textView6"
+            app:layout_constraintEnd_toEndOf="@+id/P_SearchField"
+            app:layout_constraintStart_toStartOf="@+id/textView6"
+            app:layout_constraintTop_toTopOf="@+id/textView6" />
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginBottom="20dp"
+            app:cardBackgroundColor="#ffffff"
+            app:cardCornerRadius="90dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="1.0">
+
+            <Button
+                android:id="@+id/P_AddPollButton"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/add_circle_svgrepo_com"
+                android:backgroundTint="#FFFFFF"
+                android:backgroundTintMode="screen"
+                android:drawableTint="#FFFFFF"
+                android:foregroundTint="#FFFFFF"
+                app:backgroundTint="@color/primary"
+                app:iconTint="#FFFFFF" />
+        </androidx.cardview.widget.CardView>
 
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
             android:id="@+id/P_RefreshLayout"
             android:layout_width="0dp"
-            android:layout_height="0dp"
+            android:layout_height="wrap_content"
             android:layout_marginStart="30dp"
-            android:layout_marginTop="20dp"
             android:layout_marginEnd="30dp"
             android:layout_marginBottom="20dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView3">
+            app:layout_constraintTop_toBottomOf="@+id/textView22"
+            app:layout_constraintVertical_bias="0.0">
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/P_PollListRecyclerView"
@@ -89,6 +142,46 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textView3" />
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/P_TagListRecyclerView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="30dp"
+            android:layout_marginEnd="30dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView21"
+            app:layout_constraintVertical_bias="0.0" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/P_AddedTagListRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="30dp"
+            android:layout_marginEnd="30dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/P_TagListRecyclerView"
+            app:layout_constraintVertical_bias="0.0" />
+
+        <TextView
+            android:id="@+id/textView21"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:fontFamily="@font/montserrat_bold"
+            android:text="Tags"
+            android:textColor="@color/primary"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/P_SearchField"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/P_SearchField"
+            app:layout_constraintTop_toBottomOf="@+id/P_SearchField"
+            app:layout_constraintVertical_bias="0.0" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

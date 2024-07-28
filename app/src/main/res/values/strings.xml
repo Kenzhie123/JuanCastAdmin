@@ -6,6 +6,10 @@
     <string-array name="tags">
         <item>Korean</item>
         <item>Group</item>
-        <item>Male</item>
+        <item>Boy</item>
+        <item>Girl</item>
+        <item>Solo</item>
     </string-array>
+
+
 </resources>

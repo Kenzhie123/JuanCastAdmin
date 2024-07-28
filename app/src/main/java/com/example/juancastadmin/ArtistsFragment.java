@@ -9,11 +9,14 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.juancastadmin.model.Artist;
@@ -37,31 +40,34 @@ public class ArtistsFragment extends Fragment {
 
     FirebaseFirestore db;
     ArrayList<Artist> artistList;
+    ArrayList<Artist> displayedArtistList;
+    ArtistListAdapter artistListAdapter;
 
     RecyclerView A_ArtistRecyclerView;
     SwipeRefreshLayout A_RefreshContainer;
     Button A_AddArtistButton;
+    EditText A_SearchField;
 
 
-    public void setArtistList(View v)
-    {
+    public void setArtistList(View v) {
         A_RefreshContainer.setRefreshing(true);
         artistList = new ArrayList<>();
+        displayedArtistList = new ArrayList<>();
         db.collection("artists").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if(task.isSuccessful())
-                {
+                if (task.isSuccessful()) {
                     List<DocumentSnapshot> documents = task.getResult().getDocuments();
-                    for(DocumentSnapshot d : documents)
-                    {
-                        Map<String,Object> dataInfo = d.getData();
-                        Artist artist = new Artist( d.getId(),(String)dataInfo.get("artist_name"),(ArrayList<String>) dataInfo.get("tags"));
-                        Log.d("DataTag",artist.toString());
+                    for (DocumentSnapshot d : documents) {
+                        Map<String, Object> dataInfo = d.getData();
+                        Artist artist = new Artist(d.getId(), (String) dataInfo.get("artist_name"), (ArrayList<String>) dataInfo.get("tags"));
+                        Log.d("DataTag", artist.toString());
                         artistList.add(artist);
+                        displayedArtistList.add(artist);
                     }
 
-                    A_ArtistRecyclerView.setAdapter(new ArtistListAdapter(v.getContext(),artistList));
+                    artistListAdapter = new ArtistListAdapter(v.getContext(), displayedArtistList);
+                    A_ArtistRecyclerView.setAdapter(artistListAdapter);
                     A_ArtistRecyclerView.setLayoutManager(new LinearLayoutManager(v.getContext()));
 
                     A_RefreshContainer.setRefreshing(false);
@@ -71,7 +77,19 @@ public class ArtistsFragment extends Fragment {
         });
 
 
+    }
 
+    public void setToSearch(String search)
+    {
+        displayedArtistList.clear();
+        for(Artist artist : artistList)
+        {
+            if(artist.getArtistName().toLowerCase().contains(search.toLowerCase()))
+            {
+                displayedArtistList.add(artist);
+            }
+        }
+        artistListAdapter.notifyDataSetChanged();
     }
 
 
@@ -86,6 +104,7 @@ public class ArtistsFragment extends Fragment {
         A_ArtistRecyclerView = v.findViewById(R.id.A_ArtistRecyclerView);
         A_AddArtistButton = v.findViewById(R.id.A_AddArtistButton);
         A_RefreshContainer = v.findViewById(R.id.A_RefreshContainer);
+        A_SearchField = v.findViewById(R.id.A_SearchField);
 
 
         A_AddArtistButton.setOnClickListener(new View.OnClickListener() {
@@ -102,6 +121,24 @@ public class ArtistsFragment extends Fragment {
                 setArtistList(v);
             }
         });
+
+        A_SearchField.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                setToSearch(s.toString());
+            }
+        });
+
 
         setArtistList(v);
 

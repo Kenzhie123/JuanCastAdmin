@@ -8,12 +8,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -69,12 +71,15 @@ public class ArtistListAdapter extends RecyclerView.Adapter<ArtistListAdapter.Ar
             @Override
             public boolean onLoadFailed(@Nullable GlideException e, @Nullable Object model, @NonNull Target<Drawable> target, boolean isFirstResource) {
                 Log.d("DataTag",e.getMessage());
+                holder.ARI_ProgressBar.setVisibility(View.GONE);
+                holder.ARI_ProfileImage.setImageResource(R.drawable.profile);
                 return false;
             }
 
             @Override
             public boolean onResourceReady(@NonNull Drawable resource, @NonNull Object model, Target<Drawable> target, @NonNull DataSource dataSource, boolean isFirstResource) {
                 Log.d("DataTag","done");
+                holder.ARI_ProgressBar.setVisibility(View.GONE);
                 return false;
             }
         }).into(holder.ARI_ProfileImage);
@@ -87,7 +92,6 @@ public class ArtistListAdapter extends RecyclerView.Adapter<ArtistListAdapter.Ar
                 update.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 update.putExtra("isUpdate",true);
                 update.putExtra("artistID",currentArtist.getArtistID());
-                Log.d("DataTag",currentArtist.getArtistID());
                 context.startActivity(update);
             }
         });
@@ -104,6 +108,7 @@ public class ArtistListAdapter extends RecyclerView.Adapter<ArtistListAdapter.Ar
         TextView ARI_Name;
         ImageView ARI_ProfileImage;
         TextView ARI_Tags;
+        ProgressBar ARI_ProgressBar;
         public ArtistListViewHolder(@NonNull View itemView) {
             super(itemView);
 
@@ -111,6 +116,7 @@ public class ArtistListAdapter extends RecyclerView.Adapter<ArtistListAdapter.Ar
             ARI_ProfileImage = itemView.findViewById(R.id.ARI_ProfileImage);
             ARI_Tags = itemView.findViewById(R.id.ARI_Tags);
             ARI_Background = itemView.findViewById(R.id.ARI_Background);
+            ARI_ProgressBar = itemView.findViewById(R.id.ARI_ProgressBar);
         }
     }
 }

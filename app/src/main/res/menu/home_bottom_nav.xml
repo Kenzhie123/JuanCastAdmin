@@ -1,20 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
         android:id="@+id/menu_home"
-        android:icon="@drawable/round_home_24"
-        android:title="Home" />
+        android:icon="@drawable/home_smile_svgrepo_com"
+        android:title="Home"
+
+        app:cnb_backgroundColor="@color/primary"
+        app:cnb_textColor="@color/white"
+        app:cnb_iconColor="@color/white"
+        app:cnb_iconTintMode="src_in"/>
     <item
         android:id="@+id/menu_artists"
-        android:icon="@drawable/round_emoji_people_24"
-        android:title="Artists" />
+        android:icon="@drawable/microphone_2_svgrepo_com"
+        android:title="Artists"
+        app:cnb_backgroundColor="@color/primary"
+        app:cnb_textColor="@color/white"
+        app:cnb_iconColor="@color/white"
+        app:cnb_iconTintMode="src_in"/>
     <item
         android:id="@+id/menu_poll"
         android:icon="@drawable/round_poll_24"
-        android:title="Poll" />
+        android:title="Poll"
+        app:cnb_backgroundColor="@color/primary"
+        app:cnb_textColor="@color/white"
+        app:cnb_iconColor="@color/white"
+        app:cnb_iconTintMode="src_in"/>
     <item
         android:id="@+id/menu_profile"
-        android:icon="@drawable/round_person_24"
-        android:title="Profile" />
+        android:icon="@drawable/user_svgrepo_com"
+        android:title="Profile"
+        app:cnb_backgroundColor="@color/primary"
+        app:cnb_textColor="@color/white"
+        app:cnb_iconColor="@color/white"
+        app:cnb_iconTintMode="src_in"/>
 </menu>

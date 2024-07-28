@@ -21,6 +21,8 @@ import com.example.juancastadmin.listadapters.APAArtistListAdapter;
 import com.example.juancastadmin.listadapters.AddedTagListAdapter;
 import com.example.juancastadmin.listadapters.TagsListAdapter;
 import com.example.juancastadmin.model.APAArtist;
+import com.google.android.flexbox.FlexDirection;
+import com.google.android.flexbox.FlexboxLayoutManager;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -64,9 +66,9 @@ public class AddPollArtists extends AppCompatActivity {
         tagsListAdapter = new TagsListAdapter(getApplicationContext(),tagList,this);
         addedTagListAdapter = new AddedTagListAdapter(getApplicationContext(),addedTagList,this);
         APA_TagListRecyclerView.setAdapter(tagsListAdapter);
-        APA_TagListRecyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+        APA_TagListRecyclerView.setLayoutManager(new FlexboxLayoutManager(getApplicationContext(), FlexDirection.ROW));
         APA_AddedTagListRecyclerView.setAdapter(addedTagListAdapter);
-        APA_AddedTagListRecyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext(),LinearLayoutManager.HORIZONTAL,false));
+        APA_AddedTagListRecyclerView.setLayoutManager(new FlexboxLayoutManager(getApplicationContext(),FlexDirection.ROW));
     }
     public void refreshTagList()
     {
@@ -111,6 +113,11 @@ public class AddPollArtists extends AppCompatActivity {
                     artistListAdapter = new APAArtistListAdapter(getApplicationContext(),addedArtist);
                     APA_ArtistListRecyclerView.setAdapter(artistListAdapter);
                     APA_ArtistListRecyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+
+                    if(getIntent().getExtras().get("artistsIDList") != null && getIntent().getExtras().get("tagList") != null)
+                    {
+                        setToUpdate(getIntent().getExtras().getStringArrayList("artistsIDList"),getIntent().getExtras().getStringArrayList("tagList"));
+                    }
                 }
             }
         });
@@ -141,10 +148,37 @@ public class AddPollArtists extends AppCompatActivity {
         }
         else
         {
+            addedArtist.clear();
             addedArtist.addAll(artistList);
         }
         artistListAdapter.notifyDataSetChanged();
     }
+
+    public void setToUpdate(ArrayList<String> artistsIDList,ArrayList<String> updateTagList)
+    {
+        addedArtist.clear();
+        APA_AddPollButton.setText("Update");
+        for(APAArtist apaArtist : artistList)
+        {
+            for(String id :artistsIDList)
+            {
+                if(apaArtist.getArtistID().equals(id)){
+                    addedArtist.add(apaArtist);
+                }
+            }
+
+        }
+
+        for(String tag : updateTagList)
+        {
+            tagList.remove(tag);
+            addedTagList.add(tag);
+        }
+        tagsListAdapter.notifyDataSetChanged();
+        addedTagListAdapter.notifyDataSetChanged();
+        artistListAdapter.notifyDataSetChanged();
+    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -164,6 +198,8 @@ public class AddPollArtists extends AppCompatActivity {
         APA_ArtistListRecyclerView = findViewById(R.id.APA_ArtistListRecyclerView);
         APA_BackButton = findViewById(R.id.APA_BackButton);
         APA_AddPollButton = findViewById(R.id.APA_AddPollButton);
+
+
 
         APA_BackButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -186,6 +222,7 @@ public class AddPollArtists extends AppCompatActivity {
 
                 Intent intent = new Intent();
                 intent.putExtra("artistList",artistIDListTemp);
+                intent.putExtra("addedTagList",addedTagList);
                 setResult(RESULT_OK,intent);
                 finish();
             }
@@ -193,5 +230,7 @@ public class AddPollArtists extends AppCompatActivity {
 
         initTagList();
         initPollArtistsList();
+
+
     }
 }
