@@ -40,6 +40,7 @@ import com.example.juancastadmin.helper.Tools;
 import com.example.juancastadmin.model.APAArtist;
 import com.example.juancastadmin.model.Poll;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.Firebase;
 import com.google.firebase.firestore.DocumentReference;
@@ -95,33 +96,59 @@ public class AddPoll extends AppCompatActivity{
         pollMap.put("tag_list",addedTagList);
 
 
+
         db.collection("voting_polls").add(pollMap).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
             @Override
             public void onComplete(@NonNull Task<DocumentReference> task) {
                 if(task.isSuccessful())
                 {
-                    StorageReference reference = storage.getReference();
-                    StorageReference bannerReference = reference.child("voting_poll_banners").child(task.getResult().getId());
-                    Bitmap pollBannerBitmap = ((BitmapDrawable)AP_BannerImage.getDrawable()).getBitmap();
-                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                    pollBannerBitmap.compress(Bitmap.CompressFormat.JPEG,100,baos);
-                    byte[] data = baos.toByteArray();
-                    bannerReference.putBytes(data).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
-                            if(task.isSuccessful())
-                            {
-                                Toast.makeText(getApplicationContext(),"Poll successfully added",Toast.LENGTH_LONG).show();
-                                disableProgress();
-                                finish();
-                            }
-                            else
-                            {
-                                Toast.makeText(getApplicationContext(),"Poll adding unsuccessful: " + task.getException().getMessage(),Toast.LENGTH_LONG).show();
-                                disableProgress();
-                            }
-                        }
-                    });
+                    final int[] count = {1};
+                    for(String artistID: artistList)
+                    {
+                        Map<String,Object> artistVotes = new HashMap<>();
+                        artistVotes.put("sun_votes", 0);
+                        artistVotes.put("star_votes",0);
+                        db.collection("voting_polls")
+                                .document(task.getResult().getId())
+                                .collection("votes")
+                                .document(artistID)
+                                .set(artistVotes).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void unused) {
+                                        if(count[0] == artistList.size())
+                                        {
+                                            StorageReference reference = storage.getReference();
+                                            StorageReference bannerReference = reference.child("voting_poll_banners").child(task.getResult().getId());
+                                            Bitmap pollBannerBitmap = ((BitmapDrawable)AP_BannerImage.getDrawable()).getBitmap();
+                                            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                                            pollBannerBitmap.compress(Bitmap.CompressFormat.JPEG,100,baos);
+                                            byte[] data = baos.toByteArray();
+                                            bannerReference.putBytes(data).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+                                                    if(task.isSuccessful())
+                                                    {
+                                                        Toast.makeText(getApplicationContext(),"Poll successfully added",Toast.LENGTH_LONG).show();
+                                                        disableProgress();
+                                                        finish();
+                                                    }
+                                                    else
+                                                    {
+                                                        Toast.makeText(getApplicationContext(),"Poll adding unsuccessful: " + task.getException().getMessage(),Toast.LENGTH_LONG).show();
+                                                        disableProgress();
+                                                    }
+                                                }
+                                            });
+                                        }
+                                        else
+                                        {
+                                            count[0]++;
+                                        }
+                                    }
+                                });
+
+                    }
+
                 }
             }
         });
@@ -139,7 +166,6 @@ public class AddPoll extends AppCompatActivity{
         pollMap.put("artists",artistList);
         pollMap.put("tag_list",addedTagList);
 
-
         db.collection("voting_polls").document(pollToEdit.getId()).update(pollMap).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
@@ -156,6 +182,7 @@ public class AddPoll extends AppCompatActivity{
                         public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
                             if(task.isSuccessful())
                             {
+
                                 Toast.makeText(getApplicationContext(),"Poll successfully updated",Toast.LENGTH_LONG).show();
                                 disableProgress();
                                 finish();
@@ -185,6 +212,8 @@ public class AddPoll extends AppCompatActivity{
                     if(doc != null)
                     {
                         Map<String,Object> data = doc.getData();
+
+
                         pollToEdit = new Poll(doc.getId(),
                                 (String)data.get("poll_title"),
                                 Tools.StringToDate((String)data.get("date_from")),
@@ -438,6 +467,7 @@ public class AddPoll extends AppCompatActivity{
                 Intent intent = new Intent(getApplicationContext(),AddPollArtists.class);
                 if(pollToEdit != null)
                 {
+                    Log.d("DATATAG","called");
                     intent.putExtra("artistsIDList",pollToEdit.getArtistIDList());
                     intent.putExtra("tagList",pollToEdit.getTagList());
                 }
