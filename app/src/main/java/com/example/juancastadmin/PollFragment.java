@@ -176,15 +176,21 @@ public class PollFragment extends Fragment {
 
     public void setToSearch(String search)
     {
-        displayedPollList.clear();
-        for(Poll poll : pollList)
-        {
-            if(poll.getTitle().toLowerCase().contains(search.toLowerCase()))
+        try{
+            displayedPollList.clear();
+            for(Poll poll : pollList)
             {
-                displayedPollList.add(poll);
+                if(poll.getTitle().toLowerCase().contains(search.toLowerCase()))
+                {
+                    displayedPollList.add(poll);
+                }
             }
+            pollListAdapter.notifyDataSetChanged();
+        }catch (Exception e)
+        {
+            Log.d("DATATAG",e.getMessage());
         }
-        pollListAdapter.notifyDataSetChanged();
+
     }
 
     @Override

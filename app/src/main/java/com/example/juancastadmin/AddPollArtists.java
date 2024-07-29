@@ -2,6 +2,7 @@ package com.example.juancastadmin;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
@@ -114,10 +115,16 @@ public class AddPollArtists extends AppCompatActivity {
                     APA_ArtistListRecyclerView.setAdapter(artistListAdapter);
                     APA_ArtistListRecyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
 
-                    if(getIntent().getExtras().get("artistsIDList") != null && getIntent().getExtras().get("tagList") != null)
+                    try{
+                        if(getIntent().getExtras().get("artistsIDList") != null && getIntent().getExtras().get("tagList") != null)
+                        {
+                            setToUpdate(getIntent().getExtras().getStringArrayList("artistsIDList"),getIntent().getExtras().getStringArrayList("tagList"));
+                        }
+                    }catch (Exception e)
                     {
-                        setToUpdate(getIntent().getExtras().getStringArrayList("artistsIDList"),getIntent().getExtras().getStringArrayList("tagList"));
+                        Log.d("DATATAG",e.getMessage());
                     }
+
                 }
             }
         });
